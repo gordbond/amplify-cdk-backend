@@ -4,6 +4,7 @@ import * as cdkv2 from 'aws-cdk-lib';
 import * as cognito from "@aws-cdk/aws-cognito";
 // import { aws_cognito as cognito} from 'aws-cdk-lib';
 import * as codebuild from 'aws-cdk-lib/aws-codebuild';
+import * as dynamodb from '@aws-cdk/aws-dynamodb';
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 import * as config from '../config.json';
@@ -52,11 +53,12 @@ export class AmplifyInfraStack extends cdk.Stack {
         }
       }
     });
+
     
 
     //Creates the amplify App using the config file 
     const amplifyApp = new amplify.App(this, 'MyApp', {
-      sourceCodeProvider: new amplify.GitHubSourceCodeProvider({
+        sourceCodeProvider: new amplify.GitHubSourceCodeProvider({
         owner: config['amplify-app'].repository_owner,
         repository: config['amplify-app'].repository_name,
         oauthToken: cdk.SecretValue.secretsManager('GitHubToken'),

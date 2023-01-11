@@ -5,7 +5,19 @@
 ## [End] Determine request authentication mode **
 ## [Start] Check authMode and execute owner/group checks **
 #if( $authMode == "userPools" )
-  ## No Static Group Authorization Rules **
+  ## [Start] Static Group Authorization Checks **
+  #set($isStaticGroupAuthorized = $util.defaultIfNull(
+            $isStaticGroupAuthorized, false))
+  ## Authorization rule: { allow: groups, groups: ["Admin","ElevatorCompany","BuildingManager","Guest"], groupClaim: "cognito:groups" } **
+  #set( $userGroups = $util.defaultIfNull($ctx.identity.claims.get("cognito:groups"), []) )
+  #set( $allowedGroups = ["Admin", "ElevatorCompany", "BuildingManager", "Guest"] )
+  #foreach( $userGroup in $userGroups )
+    #if( $allowedGroups.contains($userGroup) )
+      #set( $isStaticGroupAuthorized = true )
+      #break
+    #end
+  #end
+  ## [End] Static Group Authorization Checks **
 
 
   ## [Start] If not static group authorized, filter items **
@@ -15,24 +27,7 @@
       ## No Dynamic Group Authorization Rules **
 
 
-      ## [Start] Owner Authorization Checks **
-      #set( $isLocalOwnerAuthorized = false )
-      ## Authorization rule: { allow: owner, ownerField: "owner", identityClaim: "cognito:username" } **
-      #set( $allowedOwners0 = $util.defaultIfNull($item.owner, []) )
-      #set( $identityValue = $util.defaultIfNull($ctx.identity.claims.get("username"), $util.defaultIfNull($ctx.identity.claims.get("cognito:username"), "___xamznone____")) )
-      #if( $util.isList($allowedOwners0) )
-        #foreach( $allowedOwner in $allowedOwners0 )
-          #if( $allowedOwner == $identityValue )
-            #set( $isLocalOwnerAuthorized = true )
-          #end
-        #end
-      #end
-      #if( $util.isString($allowedOwners0) )
-        #if( $allowedOwners0 == $identityValue )
-          #set( $isLocalOwnerAuthorized = true )
-        #end
-      #end
-      ## [End] Owner Authorization Checks **
+      ## No Owner Authorization Rules **
 
 
       #if( ($isLocalDynamicGroupAuthorized == true || $isLocalOwnerAuthorized == true) )

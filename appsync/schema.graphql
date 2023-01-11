@@ -1,9 +1,117 @@
-type Note {
+type Project {
   id: ID!
-  note: String!
+  projectId: String
+  projectCreationDate: AWSDate
+  projectOwnerName: String
+  projectOwnerStNo: String
+  projectOwnerStName: String
+  projectOwnerCity: String
+  projectOwnerState: String
+  projectOwnerPostalCode: String
+  projectOwnerAccountNo: String
+  projectLocationofElevatingDevice: String
+  projectElevatorContractor: String
+  projectElevatorConsultant: String
+  projectEC: String
+  projectBM: String
+  projectGuest: [GuestCode]
+  projectElevatorInfo: String
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
-  owner: String
+}
+
+type GuestCode {
+  id: ID!
+  code: String
+  guestCode: [Project]
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type SigUpCodeTable {
+  id: ID!
+  SignUpGroup: String
+  SignUpCode: String
+  CurrentlyAvailableCodes: [String]
+  AssignedCodes: [String]
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type User {
+  id: ID!
+  username: String!
+  email: String!
+  preferred_username: String!
+  registration_code: String!
+  group: String!
+  sheetInformation: String
+  embededUrl: String
+  subscriptions: [String]
+  pending_subscriptions: [String]
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Query {
+  listUrls: [UpdateUrl]
+  getUrl(id: ID!, email: String!): UpdateUrl
+  getListOfAlerts: [Alerts]
+  getAlertById(elevator_id: String!, project_id: String!, signal_type: String, email: String, userName: String, action: String): Alerts
+  updateSubscriptionsByUser(id: ID!, email: String, userName: String): User
+  getProject(id: ID!): Project
+  listProjects(filter: ModelProjectFilterInput, limit: Int, nextToken: String): ModelProjectConnection
+  getGuestCode(id: ID!): GuestCode
+  listGuestCodes(filter: ModelGuestCodeFilterInput, limit: Int, nextToken: String): ModelGuestCodeConnection
+  getSigUpCodeTable(id: ID!): SigUpCodeTable
+  listSigUpCodeTables(filter: ModelSigUpCodeTableFilterInput, limit: Int, nextToken: String): ModelSigUpCodeTableConnection
+  getUser(id: ID!): User
+  listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection
+  getAlerts(id: ID!): Alerts
+  listAlerts(filter: ModelAlertsFilterInput, limit: Int, nextToken: String): ModelAlertsConnection
+}
+
+type Mutation {
+  createCalVarPubSubMsg(projectId: String!, elevatorId: String!, calibrationValue: String!): CalVarPubSub
+  createProject(input: CreateProjectInput!): Project
+  updateProject(input: UpdateProjectInput!): Project
+  deleteProject(input: DeleteProjectInput!): Project
+  createGuestCode(input: CreateGuestCodeInput!): GuestCode
+  updateGuestCode(input: UpdateGuestCodeInput!): GuestCode
+  deleteGuestCode(input: DeleteGuestCodeInput!): GuestCode
+  createSigUpCodeTable(input: CreateSigUpCodeTableInput!): SigUpCodeTable
+  updateSigUpCodeTable(input: UpdateSigUpCodeTableInput!): SigUpCodeTable
+  deleteSigUpCodeTable(input: DeleteSigUpCodeTableInput!): SigUpCodeTable
+  createUser(input: CreateUserInput!): User
+  updateUser(input: UpdateUserInput!): User
+  deleteUser(input: DeleteUserInput!): User
+  createAlerts(input: CreateAlertsInput!): Alerts
+  updateAlerts(input: UpdateAlertsInput!): Alerts
+  deleteAlerts(input: DeleteAlertsInput!): Alerts
+}
+
+type CalVarPubSub {
+  projectId: String!
+  elevatorId: String!
+  calibrationValue: String!
+}
+
+type Alerts {
+  id: ID!
+  elevator_id: String!
+  project_id: String!
+  status: String
+  signal_type: String!
+  alert_type: String!
+  alert_message: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type UpdateUrl {
+  id: ID!
+  data: String!
+  email: String!
 }
 
 enum ModelSortDirection {
@@ -11,8 +119,8 @@ enum ModelSortDirection {
   DESC
 }
 
-type ModelNoteConnection {
-  items: [Note]
+type ModelProjectConnection {
+  items: [Project]
   nextToken: String
 }
 
@@ -67,41 +175,240 @@ input ModelBooleanFilterInput {
   eq: Boolean
 }
 
-input ModelNoteFilterInput {
+input ModelProjectFilterInput {
   id: ModelIDFilterInput
-  note: ModelStringFilterInput
-  and: [ModelNoteFilterInput]
-  or: [ModelNoteFilterInput]
-  not: ModelNoteFilterInput
+  projectId: ModelStringFilterInput
+  projectCreationDate: ModelStringFilterInput
+  projectOwnerName: ModelStringFilterInput
+  projectOwnerStNo: ModelStringFilterInput
+  projectOwnerStName: ModelStringFilterInput
+  projectOwnerCity: ModelStringFilterInput
+  projectOwnerState: ModelStringFilterInput
+  projectOwnerPostalCode: ModelStringFilterInput
+  projectOwnerAccountNo: ModelStringFilterInput
+  projectLocationofElevatingDevice: ModelStringFilterInput
+  projectElevatorContractor: ModelStringFilterInput
+  projectElevatorConsultant: ModelStringFilterInput
+  projectEC: ModelStringFilterInput
+  projectBM: ModelStringFilterInput
+  projectElevatorInfo: ModelStringFilterInput
+  and: [ModelProjectFilterInput]
+  or: [ModelProjectFilterInput]
+  not: ModelProjectFilterInput
 }
 
-type Query {
-  getNote(id: ID!): Note
-  listNotes(filter: ModelNoteFilterInput, limit: Int, nextToken: String): ModelNoteConnection
-}
-
-input CreateNoteInput {
+input CreateProjectInput {
   id: ID
-  note: String!
+  projectId: String
+  projectCreationDate: AWSDate
+  projectOwnerName: String
+  projectOwnerStNo: String
+  projectOwnerStName: String
+  projectOwnerCity: String
+  projectOwnerState: String
+  projectOwnerPostalCode: String
+  projectOwnerAccountNo: String
+  projectLocationofElevatingDevice: String
+  projectElevatorContractor: String
+  projectElevatorConsultant: String
+  projectEC: String
+  projectBM: String
+  projectElevatorInfo: String
 }
 
-input UpdateNoteInput {
+input UpdateProjectInput {
   id: ID!
-  note: String
+  projectId: String
+  projectCreationDate: AWSDate
+  projectOwnerName: String
+  projectOwnerStNo: String
+  projectOwnerStName: String
+  projectOwnerCity: String
+  projectOwnerState: String
+  projectOwnerPostalCode: String
+  projectOwnerAccountNo: String
+  projectLocationofElevatingDevice: String
+  projectElevatorContractor: String
+  projectElevatorConsultant: String
+  projectEC: String
+  projectBM: String
+  projectElevatorInfo: String
 }
 
-input DeleteNoteInput {
+input DeleteProjectInput {
   id: ID!
-}
-
-type Mutation {
-  createNote(input: CreateNoteInput!): Note
-  updateNote(input: UpdateNoteInput!): Note
-  deleteNote(input: DeleteNoteInput!): Note
 }
 
 type Subscription {
-  onCreateNote(owner: String!): Note @aws_subscribe(mutations: ["createNote"])
-  onUpdateNote(owner: String!): Note @aws_subscribe(mutations: ["updateNote"])
-  onDeleteNote(owner: String!): Note @aws_subscribe(mutations: ["deleteNote"])
+  onCreateProject: Project @aws_subscribe(mutations: ["createProject"])
+  onUpdateProject: Project @aws_subscribe(mutations: ["updateProject"])
+  onDeleteProject: Project @aws_subscribe(mutations: ["deleteProject"])
+  onCreateGuestCode: GuestCode @aws_subscribe(mutations: ["createGuestCode"])
+  onUpdateGuestCode: GuestCode @aws_subscribe(mutations: ["updateGuestCode"])
+  onDeleteGuestCode: GuestCode @aws_subscribe(mutations: ["deleteGuestCode"])
+  onCreateSigUpCodeTable: SigUpCodeTable @aws_subscribe(mutations: ["createSigUpCodeTable"])
+  onUpdateSigUpCodeTable: SigUpCodeTable @aws_subscribe(mutations: ["updateSigUpCodeTable"])
+  onDeleteSigUpCodeTable: SigUpCodeTable @aws_subscribe(mutations: ["deleteSigUpCodeTable"])
+  onCreateUser(username: String): User @aws_subscribe(mutations: ["createUser"])
+  onUpdateUser(username: String): User @aws_subscribe(mutations: ["updateUser"])
+  onDeleteUser(username: String): User @aws_subscribe(mutations: ["deleteUser"])
+  onCreateAlerts: Alerts @aws_subscribe(mutations: ["createAlerts"])
+  onUpdateAlerts: Alerts @aws_subscribe(mutations: ["updateAlerts"])
+  onDeleteAlerts: Alerts @aws_subscribe(mutations: ["deleteAlerts"])
+}
+
+type ModelGuestCodeConnection {
+  items: [GuestCode]
+  nextToken: String
+}
+
+input ModelGuestCodeFilterInput {
+  id: ModelIDFilterInput
+  code: ModelStringFilterInput
+  and: [ModelGuestCodeFilterInput]
+  or: [ModelGuestCodeFilterInput]
+  not: ModelGuestCodeFilterInput
+}
+
+input CreateGuestCodeInput {
+  id: ID
+  code: String
+}
+
+input UpdateGuestCodeInput {
+  id: ID!
+  code: String
+}
+
+input DeleteGuestCodeInput {
+  id: ID!
+}
+
+type ModelSigUpCodeTableConnection {
+  items: [SigUpCodeTable]
+  nextToken: String
+}
+
+input ModelSigUpCodeTableFilterInput {
+  id: ModelIDFilterInput
+  SignUpGroup: ModelStringFilterInput
+  SignUpCode: ModelStringFilterInput
+  CurrentlyAvailableCodes: ModelStringFilterInput
+  AssignedCodes: ModelStringFilterInput
+  and: [ModelSigUpCodeTableFilterInput]
+  or: [ModelSigUpCodeTableFilterInput]
+  not: ModelSigUpCodeTableFilterInput
+}
+
+input CreateSigUpCodeTableInput {
+  id: ID
+  SignUpGroup: String
+  SignUpCode: String
+  CurrentlyAvailableCodes: [String]
+  AssignedCodes: [String]
+}
+
+input UpdateSigUpCodeTableInput {
+  id: ID!
+  SignUpGroup: String
+  SignUpCode: String
+  CurrentlyAvailableCodes: [String]
+  AssignedCodes: [String]
+}
+
+input DeleteSigUpCodeTableInput {
+  id: ID!
+}
+
+type ModelUserConnection {
+  items: [User]
+  nextToken: String
+}
+
+input ModelUserFilterInput {
+  id: ModelIDFilterInput
+  username: ModelStringFilterInput
+  email: ModelStringFilterInput
+  preferred_username: ModelStringFilterInput
+  registration_code: ModelStringFilterInput
+  group: ModelStringFilterInput
+  sheetInformation: ModelStringFilterInput
+  embededUrl: ModelStringFilterInput
+  subscriptions: ModelStringFilterInput
+  pending_subscriptions: ModelStringFilterInput
+  and: [ModelUserFilterInput]
+  or: [ModelUserFilterInput]
+  not: ModelUserFilterInput
+}
+
+input CreateUserInput {
+  id: ID
+  username: String!
+  email: String!
+  preferred_username: String!
+  registration_code: String!
+  group: String!
+  sheetInformation: String
+  embededUrl: String
+  subscriptions: [String]
+  pending_subscriptions: [String]
+}
+
+input UpdateUserInput {
+  id: ID!
+  username: String
+  email: String
+  preferred_username: String
+  registration_code: String
+  group: String
+  sheetInformation: String
+  embededUrl: String
+  subscriptions: [String]
+  pending_subscriptions: [String]
+}
+
+input DeleteUserInput {
+  id: ID!
+}
+
+type ModelAlertsConnection {
+  items: [Alerts]
+  nextToken: String
+}
+
+input ModelAlertsFilterInput {
+  id: ModelIDFilterInput
+  elevator_id: ModelStringFilterInput
+  project_id: ModelStringFilterInput
+  status: ModelStringFilterInput
+  signal_type: ModelStringFilterInput
+  alert_type: ModelStringFilterInput
+  alert_message: ModelStringFilterInput
+  and: [ModelAlertsFilterInput]
+  or: [ModelAlertsFilterInput]
+  not: ModelAlertsFilterInput
+}
+
+input CreateAlertsInput {
+  id: ID
+  elevator_id: String!
+  project_id: String!
+  status: String
+  signal_type: String!
+  alert_type: String!
+  alert_message: String!
+}
+
+input UpdateAlertsInput {
+  id: ID!
+  elevator_id: String
+  project_id: String
+  status: String
+  signal_type: String
+  alert_type: String
+  alert_message: String
+}
+
+input DeleteAlertsInput {
+  id: ID!
 }
