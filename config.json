@@ -1,0 +1,7 @@
+{
+    "amplify-app": {
+        "repository_name": "amplify-cdk-demo",
+        "repository_owner": "gordbond",
+        "branch": "main"
+    }
+}
